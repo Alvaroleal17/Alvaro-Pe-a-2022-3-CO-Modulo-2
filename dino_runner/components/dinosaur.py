@@ -52,7 +52,7 @@ class Dinosaur(Sprite):
         self.image = JUMPING
         self.dino_rect.y -= self.jump_speed * 4
 
-        self.jump_speed -= 0.5
+        self.jump_speed -= 0.8
 
         if self.jump_speed < -self.JUMP_SEED:
             self.dino_rect.y = self.Y_POS
