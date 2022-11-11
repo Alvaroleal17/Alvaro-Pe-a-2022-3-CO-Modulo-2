@@ -1,6 +1,6 @@
 import pygame
 
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, FONT_STYLE, DEFAULT_TYPE
+from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, FONT_STYLE, DEFAULT_TYPE, GAMEOVER
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
@@ -62,30 +62,9 @@ class Game:
         self.obstacle_manager.draw(self.screen)
         self.power_up_manager.draw(self.screen)
         self.draw_power_up_time()
-        self.draw_power_up_time()
         self.draw_score()
         pygame.display.update()
         pygame.display.flip()
-
-    def opening(self, half_screen_width, half_screen_height):
-        font = pygame.font.Font(FONT_STYLE, 30)
-        text = font.render('Press any key to start ....', True, (0, 0, 0))
-        text_rect = text.get_rect()
-        text_rect.center = (half_screen_width, half_screen_height)
-        self.screen.blit(text, text_rect)
-    
-    def ending(self, half_screen_width, half_screen_height):
-        font = pygame.font.Font(FONT_STYLE, 30)
-        ending = [font.render(f"Your Score: {self.score}", True, (0, 0, 0))
-        ,font.render(f"Best Score: {self.total_points}", True, (0, 0, 0)) 
-        ,font.render(f"Total Deaths: {self.death_count}", True, (0, 0, 0))]
-        i = 0
-        for result in ending:
-                i += 30
-                result_rect = result.get_rect()
-                result_rect.center = (half_screen_width, half_screen_height)
-                self.screen.blit(result, (result_rect.x, result_rect.y + i))
-
 
     def show_menu(self):
         self.screen.fill((255, 255,255))
@@ -97,8 +76,12 @@ class Game:
         else:
             draw_message('Press any key to restart ...', self.screen)
             draw_message(f'Your Score: {self.score}', self.screen, pos_y_center = half_screen_height + 50)
-            draw_message(f'Best Score: {self.total_points}', self.screen, pos_y_center = half_screen_height + 50)
-            draw_message(f'Total Deaths: {self.death_count}', self.screen, pos_y_center = half_screen_height + 100)
+            draw_message(f'Best Score: {self.total_points}', self.screen, pos_y_center = half_screen_height + 100)
+            draw_message(f'Total Deaths: {self.death_count}', self.screen, pos_y_center = half_screen_height + 150)
+            GAMEOVER_RECT = GAMEOVER.get_rect()
+            GAMEOVER_RECT.center = (half_screen_width, half_screen_height)
+            self.screen.blit(GAMEOVER, (GAMEOVER_RECT.x, GAMEOVER_RECT.y - 100))
+           
 
         pygame.display.update()
         self.handle_events_on_menu()
@@ -120,7 +103,7 @@ class Game:
 
     def draw_power_up_time(self):
         if self.player.has_power_up:
-            time_to_show = round((self.player.power_time_up - self.pygame.time.get_ticks())/1000, 2)
+            time_to_show = round((self.player.power_time_up - pygame.time.get_ticks())/1000, 2)
             if time_to_show >= 0:
                 draw_message(
                     f'{self.player.type} enable for {time_to_show} seconds',
